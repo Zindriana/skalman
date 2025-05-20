@@ -4,7 +4,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import skalman.data.models.CalendarAlarm
-import skalman.util.Converters
+import skalman.utils.dateUtils.Converters
 
 @Database(
     entities = [CalendarAlarm::class],
