@@ -14,4 +14,12 @@ object Converters {
     @TypeConverter
     fun toString(dateTime: LocalDateTime?): String? =
         dateTime?.format(formatter)
+
+    @TypeConverter
+    fun fromStringList(list: List<String>?): String? =
+        list?.joinToString(",")
+
+    @TypeConverter
+    fun toStringList(data: String?): List<String>? =
+        data?.split(",")
 }
