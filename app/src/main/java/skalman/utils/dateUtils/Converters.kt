@@ -1,4 +1,4 @@
-package skalman.util
+package skalman.utils.dateUtils
 
 import androidx.room.TypeConverter
 import java.time.LocalDateTime
