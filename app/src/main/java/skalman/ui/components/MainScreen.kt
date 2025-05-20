@@ -12,7 +12,6 @@ import skalman.ui.calendar.DateViewButton
 fun MainScreen() {
     Box(modifier = Modifier.fillMaxSize()) {
         CalendarScreen()
-        DateViewButton()
         DateTimeDisplay(modifier = Modifier.align(Alignment.TopEnd))
     }
 }

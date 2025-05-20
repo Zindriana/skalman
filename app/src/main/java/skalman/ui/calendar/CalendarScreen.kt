@@ -8,6 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import skalman.data.models.CalendarAlarm
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 // Dummydata – tom lista tills ViewModel är inkopplad
 private val dummyAlarms = emptyList<CalendarAlarm>()
@@ -15,6 +19,8 @@ private val dummyAlarms = emptyList<CalendarAlarm>()
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen() {
+    var selectedView by remember { mutableStateOf("week") }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -26,18 +32,28 @@ fun CalendarScreen() {
             .padding(paddingValues)
             .fillMaxSize()
         ) {
-            if (dummyAlarms.isEmpty()) {
-                Text(
-                    text = "Inga aktiviteter än",
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.padding(16.dp)
-                )
-            } else {
-                LazyColumn {
-                    items(dummyAlarms) { alarm ->
-                        AlarmCard(alarm)
+            DateViewButton(
+                selectedView = selectedView,
+                onViewModeChange = { selectedView = it }
+            )
+            when (selectedView) {
+                "day" -> Text("Dagvy (kommer senare)", modifier = Modifier.padding(16.dp))
+                "week" -> {
+                    if (dummyAlarms.isEmpty()) {
+                        Text(
+                            text = "Inga aktiviteter än",
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(16.dp)
+                        )
+                    } else {
+                        LazyColumn {
+                            items(dummyAlarms) { alarm ->
+                                AlarmCard(alarm)
+                            }
+                        }
                     }
                 }
+                "month" -> Text("Månadsvy (kommer senare)", modifier = Modifier.padding(16.dp))
             }
         }
     }
