@@ -1,4 +1,4 @@
-package skalman.ui.components
+package skalman.ui.main.components
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -15,10 +15,8 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun DateTimeDisplay(modifier: Modifier = Modifier) {
-    // State som håller aktuell tid
     var current by remember { mutableStateOf(LocalDateTime.now()) }
 
-    // Uppdaterar tiden varje sekund
     LaunchedEffect(Unit) {
         while (true) {
             current = LocalDateTime.now()
@@ -26,11 +24,9 @@ fun DateTimeDisplay(modifier: Modifier = Modifier) {
         }
     }
 
-    // Formatterar tid som: tisdag, v.20, 13 maj 14:45:00
     val formatter = DateTimeFormatter.ofPattern("EEEE, 'v.'w, dd MMM HH:mm:ss", Locale("sv"))
     val text = current.format(formatter)
 
-    // Visar tiden i UI
     Text(
         text = text,
         modifier = modifier

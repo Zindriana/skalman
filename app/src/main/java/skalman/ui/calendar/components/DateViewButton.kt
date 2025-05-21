@@ -1,4 +1,4 @@
-package skalman.ui.calendar
+package skalman.ui.calendar.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -16,13 +16,13 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun DateViewButton(
 
-    selectedView: String = "week",
-    onViewModeChange: (String) -> Unit = {}
+    selectedView: Int = 7,
+    onViewModeChange: (Int) -> Unit = {}
 ){
     val viewOptions = listOf(
-        "day" to "Dag",
-        "week" to "Vecka",
-        "month" to "Månad"
+        1 to "Dag",
+        7 to "Vecka",
+        30 to "Månad"
     )
     Row(
         modifier = Modifier

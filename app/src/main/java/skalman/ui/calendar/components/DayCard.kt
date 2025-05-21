@@ -1,4 +1,4 @@
-package skalman.ui.calendar
+package skalman.ui.calendar.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize

@@ -1,4 +1,4 @@
-package skalman.ui.components
+package skalman.ui.main
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import skalman.ui.calendar.CalendarScreen
-import skalman.ui.calendar.DateViewButton
+import skalman.ui.main.components.DateTimeDisplay
 
 @Composable
 fun MainScreen() {

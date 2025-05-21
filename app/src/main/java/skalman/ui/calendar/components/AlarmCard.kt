@@ -1,4 +1,4 @@
-package skalman.ui.calendar
+package skalman.ui.calendar.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
