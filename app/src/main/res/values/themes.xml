@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="Theme.Skalman" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Skalman" parent="Theme.MaterialComponents.DayNight.NoActionBar" />
 </resources>
