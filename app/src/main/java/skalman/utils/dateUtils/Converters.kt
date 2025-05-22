@@ -2,7 +2,6 @@ package skalman.utils.dateUtils
 
 import androidx.room.TypeConverter
 import kotlinx.serialization.encodeToString
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import skalman.data.models.IgnoreRule
 import skalman.data.models.RecurrenceRule
