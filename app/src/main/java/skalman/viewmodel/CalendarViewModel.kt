@@ -1,4 +1,4 @@
-package skalman.ui.calendar
+package skalman.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
