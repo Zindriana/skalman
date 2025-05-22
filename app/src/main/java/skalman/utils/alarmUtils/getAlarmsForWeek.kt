@@ -1,4 +1,7 @@
+//this isn´t used and can probably be deleted. The functionality is handled by others now
+
 import skalman.data.models.CalendarAlarm
+
 import skalman.data.models.DayWithAlarms
 import skalman.utils.dateUtils.getStartOfWeek
 import java.time.LocalDate
