@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import skalman.data.models.CalendarAlarm
 import skalman.data.repo.AlarmRepository
+import skalman.utils.alarmUtils.AlarmScheduler
 
 class CalendarViewModel(private val repository: AlarmRepository) : ViewModel() {
 
@@ -23,4 +24,19 @@ class CalendarViewModel(private val repository: AlarmRepository) : ViewModel() {
             repository.deleteAlarm(alarm)
         }
     }
+
+    fun addAlarm(alarm: CalendarAlarm, scheduler: AlarmScheduler) {
+        viewModelScope.launch {
+            repository.addAlarm(alarm)
+            scheduler.scheduleAlarm(alarm)
+        }
+    }
+
+    fun deleteAlarm(alarm: CalendarAlarm, scheduler: AlarmScheduler) {
+        viewModelScope.launch {
+            repository.deleteAlarm(alarm)
+            scheduler.cancelAlarm(alarm)
+        }
+    }
+
 }
