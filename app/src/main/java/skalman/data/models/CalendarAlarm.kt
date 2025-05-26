@@ -11,7 +11,7 @@ data class CalendarAlarm(
     val description: String? = null,
     val startTime: LocalDateTime,
     val preAlarmMinutes: Int = 0,
-    val recurrenceRule: RecurrenceRule? = null,
+    val recurrenceRules: RecurrenceRule? = null,
     val ignoreRules: List<IgnoreRule>? = null,
     val colorTag: String? = null,
     val alarmSound: String = "default",
