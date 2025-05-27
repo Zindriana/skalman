@@ -2,8 +2,10 @@ package skalman.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
 import skalman.data.models.CalendarAlarm
 import skalman.data.models.DayWithAlarms
 import skalman.data.repo.AlarmRepository
@@ -11,45 +13,47 @@ import skalman.utils.alarmUtils.AlarmScheduler
 import java.time.LocalDate
 
 class CalendarViewModel(
-    private val repository: AlarmRepository
+    private val repository: AlarmRepository,
+    private val scheduler: AlarmScheduler
 ) : ViewModel() {
 
-    private val _selectedPeriod = MutableStateFlow(7)
-    val selectedPeriod: StateFlow<Int> = _selectedPeriod.asStateFlow()
+    private val _selectedPeriod = MutableStateFlow(7) // antal dagar framåt
+    val selectedPeriod: StateFlow<Int> = _selectedPeriod
 
-    val alarms: StateFlow<List<CalendarAlarm>> = repository.alarms
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+    private val _groupedAlarms = MutableStateFlow<List<DayWithAlarms>>(emptyList())
+    val groupedAlarms: StateFlow<List<DayWithAlarms>> = _groupedAlarms
 
-    val groupedAlarms: StateFlow<List<DayWithAlarms>> = combine(
-        alarms,
-        selectedPeriod
-    ) { alarmList, days ->
-        val today = LocalDate.now()
-        val end = today.plusDays(days.toLong())
-
-        alarmList
-            .filter { it.startTime.toLocalDate() in today..end }
-            .groupBy { it.startTime.toLocalDate() }
-            .map { (date, list) -> DayWithAlarms(date, list) }
-            .sortedBy { it.date }
-
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
-
-    fun onPeriodSelected(period: Int) {
-        _selectedPeriod.value = period
+    fun onPeriodSelected(days: Int) {
+        _selectedPeriod.value = days
+        loadGroupedAlarms()
     }
 
-    fun addAlarm(alarm: CalendarAlarm, scheduler: AlarmScheduler) {
+    fun loadGroupedAlarms() {
         viewModelScope.launch {
-            repository.addAlarm(alarm)
-            scheduler.scheduleAlarm(alarm)
+            repository.alarms.collect { list ->
+                val grouped = list
+                    .groupBy { it.startTime.toLocalDate() }
+                    .map { (date, alarms) -> DayWithAlarms(date, alarms) }
+                    .sortedBy { it.date }
+
+                _groupedAlarms.value = grouped
+            }
         }
     }
 
-    fun deleteAlarm(alarm: CalendarAlarm, scheduler: AlarmScheduler) {
+    fun addAlarm(alarm: CalendarAlarm) {
+        viewModelScope.launch {
+            repository.addAlarm(alarm)
+            scheduler.scheduleAlarm(alarm)
+            loadGroupedAlarms()
+        }
+    }
+
+    fun deleteAlarm(alarm: CalendarAlarm) {
         viewModelScope.launch {
             repository.deleteAlarm(alarm)
             scheduler.cancelAlarm(alarm)
+            loadGroupedAlarms()
         }
     }
 }
