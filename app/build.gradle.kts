@@ -69,6 +69,7 @@ dependencies {
     testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.room.testing)
     implementation(libs.kotlinx.serialization.json)
+    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 }
 
 kapt {

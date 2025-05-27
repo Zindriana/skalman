@@ -4,22 +4,16 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import skalman.data.mock.getDummyDayWithAlarms
 import skalman.ui.calendar.components.CalendarPeriodView
 import skalman.ui.calendar.components.DateViewButton
-import skalman.data.models.CalendarAlarm
-import skalman.data.models.DayWithAlarms
-import java.time.LocalDate
+import skalman.viewmodel.CalendarViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen() {
-    var selectedPeriod by remember { mutableIntStateOf(7) }
-
-    val dummyDayList = remember(selectedPeriod) {
-        getDummyDayWithAlarms(selectedPeriod)
-    }
+fun CalendarScreen(viewModel: CalendarViewModel = hiltViewModel()) {
+    val selectedPeriod by viewModel.selectedPeriod.collectAsState()
+    val groupedAlarms by viewModel.groupedAlarms.collectAsState()
 
     Scaffold(
         topBar = {
@@ -33,13 +27,14 @@ fun CalendarScreen() {
         ) {
             DateViewButton(
                 selectedView = selectedPeriod,
-                onViewModeChange = { selectedPeriod = it }
+                onViewModeChange = { viewModel.onPeriodSelected(it) }
             )
 
             CalendarPeriodView(
                 period = selectedPeriod,
-                data = dummyDayList
+                data = groupedAlarms
             )
         }
     }
 }
+
