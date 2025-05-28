@@ -30,7 +30,6 @@ private val dateFormatter = DateTimeFormatter.ISO_LOCAL_DATE
 
 object Converters {
 
-    // LocalDateTime
     @TypeConverter
     fun fromLocalDateTime(value: LocalDateTime?): String? =
         value?.format(dateTimeFormatter)
@@ -39,7 +38,6 @@ object Converters {
     fun toLocalDateTime(value: String?): LocalDateTime? =
         value?.let { LocalDateTime.parse(it, dateTimeFormatter) }
 
-    // LocalDate (manuell konvertering för Room)
     @TypeConverter
     fun fromLocalDate(value: LocalDate?): String? =
         value?.format(dateFormatter)
