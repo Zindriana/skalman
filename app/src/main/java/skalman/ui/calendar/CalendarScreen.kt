@@ -9,7 +9,6 @@ import skalman.viewmodel.CalendarViewModel
 import skalman.ui.calendar.components.CalendarPeriodView
 import skalman.ui.calendar.components.DateViewButton
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CalendarScreen(viewModel: CalendarViewModel, onAlarmClick: (CalendarAlarm) -> Unit) {
     val selectedPeriod by viewModel.selectedPeriod.collectAsState(initial = 7)
@@ -19,11 +18,7 @@ fun CalendarScreen(viewModel: CalendarViewModel, onAlarmClick: (CalendarAlarm) -
         viewModel.loadGroupedAlarms()
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Kalender") })
-        }
-    ) { paddingValues ->
+    Scaffold{ paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
