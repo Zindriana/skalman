@@ -34,7 +34,12 @@ fun MainScreen(repository: AlarmRepository) {
     var alarmToEdit by remember { mutableStateOf<CalendarAlarm?>(null) }
 
 
+
     Column(modifier = Modifier.fillMaxSize()) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            DateTimeDisplay(modifier = Modifier.align(Alignment.TopEnd))
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -88,8 +93,6 @@ fun MainScreen(repository: AlarmRepository) {
                     )
                 }
             }
-
-            DateTimeDisplay(modifier = Modifier.align(Alignment.TopEnd))
         }
     }
 }
