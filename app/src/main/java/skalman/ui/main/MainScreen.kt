@@ -11,12 +11,14 @@ import skalman.data.repo.AlarmRepository
 import skalman.ui.calendar.CalendarScreen
 import skalman.ui.main.components.DateTimeDisplay
 import skalman.ui.alarm.AddAlarmScreen
+import skalman.ui.alarm.DetailedAlarmCard
 // import skalman.ui.focus.FocusScreen
 import skalman.viewmodel.CalendarViewModel
 import skalman.utils.alarmUtils.AlarmScheduler
+import skalman.data.models.CalendarAlarm
 
 enum class MainScreenDestination {
-    Calendar, AddAlarm, Focus
+    Calendar, AddAlarm, Focus, AlarmDetail
 }
 
 @Composable
@@ -27,6 +29,8 @@ fun MainScreen(repository: AlarmRepository) {
     }
 
     var currentScreen by remember { mutableStateOf(MainScreenDestination.Calendar) }
+    var selectedAlarm by remember { mutableStateOf<CalendarAlarm?>(null) }
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -48,9 +52,16 @@ fun MainScreen(repository: AlarmRepository) {
 
         Box(modifier = Modifier.fillMaxSize()) {
             when (currentScreen) {
-                MainScreenDestination.Calendar -> CalendarScreen(viewModel)
+                MainScreenDestination.Calendar -> CalendarScreen(
+                    viewModel = viewModel,
+                    onAlarmClick = { alarm ->
+                        selectedAlarm = alarm
+                        currentScreen = MainScreenDestination.AlarmDetail
+                    }
+                )
                 MainScreenDestination.AddAlarm -> AddAlarmScreen(viewModel)
                 MainScreenDestination.Focus -> AddAlarmScreen(viewModel) // placeholder
+                MainScreenDestination.AlarmDetail -> selectedAlarm?.let { DetailedAlarmCard(it) }
             }
 
             DateTimeDisplay(modifier = Modifier.align(Alignment.TopEnd))

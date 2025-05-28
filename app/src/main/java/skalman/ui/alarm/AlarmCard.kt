@@ -1,5 +1,6 @@
 package skalman.ui.alarm
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -10,11 +11,12 @@ import skalman.utils.dateUtils.toReadableString
 import java.time.format.DateTimeFormatter
 
 @Composable
-fun AlarmCard(alarm: CalendarAlarm) {
+fun AlarmCard(alarm: CalendarAlarm, onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
