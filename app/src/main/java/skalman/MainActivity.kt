@@ -5,14 +5,30 @@ import android.view.WindowInsets
 import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.room.Room
+import skalman.data.db.CalendarDatabase
+import skalman.data.repo.AlarmRepository
 import skalman.ui.main.MainScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Create Room database instance
+        val db = Room.databaseBuilder(
+            applicationContext,
+            CalendarDatabase::class.java,
+            "skalman-db"
+        ).build()
+
+        // Create repository instance
+        val repository = AlarmRepository(db.alarmDao())
+
         hideSystemUI()
+
+        // Launch Compose UI with repository passed in
         setContent {
-            MainScreen()
+            MainScreen(repository)
         }
     }
 
