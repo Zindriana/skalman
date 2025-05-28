@@ -1,3 +1,6 @@
+//gör om den här till att användas för mer detaljrik alarm
+// och för uppdatering och radering
+
 package skalman.ui.calendar.components
 
 import androidx.compose.foundation.layout.Column
