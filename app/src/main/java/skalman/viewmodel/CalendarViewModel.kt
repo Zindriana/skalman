@@ -54,4 +54,10 @@ class CalendarViewModel(
             loadGroupedAlarms()
         }
     }
+
+    fun updateAlarm(alarm: CalendarAlarm) {
+        viewModelScope.launch {
+            repository.updateAlarm(alarm)
+        }
+    }
 }

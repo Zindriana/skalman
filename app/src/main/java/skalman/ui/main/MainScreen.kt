@@ -16,9 +16,10 @@ import skalman.ui.alarm.DetailedAlarmCard
 import skalman.viewmodel.CalendarViewModel
 import skalman.utils.alarmUtils.AlarmScheduler
 import skalman.data.models.CalendarAlarm
+import skalman.ui.alarm.EditAlarmScreen
 
 enum class MainScreenDestination {
-    Calendar, AddAlarm, Focus, AlarmDetail
+    Calendar, AddAlarm, Focus, AlarmDetail, EditAlarm
 }
 
 @Composable
@@ -30,6 +31,7 @@ fun MainScreen(repository: AlarmRepository) {
 
     var currentScreen by remember { mutableStateOf(MainScreenDestination.Calendar) }
     var selectedAlarm by remember { mutableStateOf<CalendarAlarm?>(null) }
+    var alarmToEdit by remember { mutableStateOf<CalendarAlarm?>(null) }
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -59,9 +61,32 @@ fun MainScreen(repository: AlarmRepository) {
                         currentScreen = MainScreenDestination.AlarmDetail
                     }
                 )
+
                 MainScreenDestination.AddAlarm -> AddAlarmScreen(viewModel)
+
                 MainScreenDestination.Focus -> AddAlarmScreen(viewModel) // placeholder
-                MainScreenDestination.AlarmDetail -> selectedAlarm?.let { DetailedAlarmCard(it) }
+
+                MainScreenDestination.AlarmDetail -> selectedAlarm?.let {
+                    DetailedAlarmCard(
+                        alarm = it,
+                        onUpdate = { alarm ->
+                            alarmToEdit = alarm
+                            currentScreen = MainScreenDestination.EditAlarm
+                        },
+                        onDelete = { alarm ->
+                            viewModel.deleteAlarm(alarm)
+                            currentScreen = MainScreenDestination.Calendar
+                        }
+                    )
+                }
+
+                MainScreenDestination.EditAlarm -> alarmToEdit?.let {
+                    EditAlarmScreen(
+                        viewModel = viewModel,
+                        alarmToEdit = it,
+                        onBack = { currentScreen = MainScreenDestination.Calendar }
+                    )
+                }
             }
 
             DateTimeDisplay(modifier = Modifier.align(Alignment.TopEnd))
