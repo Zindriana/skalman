@@ -20,7 +20,7 @@ fun CalendarScreen(viewModel: CalendarViewModel) {
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Din kalender") })
+            TopAppBar(title = { Text("Kalender") })
         }
     ) { paddingValues ->
         Column(
