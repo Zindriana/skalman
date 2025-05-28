@@ -15,4 +15,8 @@ class AlarmRepository(private val dao: CalendarAlarmDao) {
     suspend fun deleteAlarm(alarm: CalendarAlarm) {
         dao.deleteAlarm(alarm)
     }
+
+    suspend fun updateAlarm(alarm: CalendarAlarm) {
+        dao.updateAlarm(alarm)
+    }
 }

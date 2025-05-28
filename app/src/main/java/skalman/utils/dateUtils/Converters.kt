@@ -39,15 +39,6 @@ object Converters {
         value?.let { LocalDateTime.parse(it, dateTimeFormatter) }
 
     @TypeConverter
-    fun fromLocalDate(value: LocalDate?): String? =
-        value?.format(dateFormatter)
-
-    @TypeConverter
-    fun toLocalDate(value: String?): LocalDate? =
-        value?.let { LocalDate.parse(it, dateFormatter) }
-
-    // RecurrenceRule
-    @TypeConverter
     fun recurrenceRuleToJson(rule: RecurrenceRule?): String? =
         rule?.let { json.encodeToString(it) }
 
@@ -55,7 +46,6 @@ object Converters {
     fun recurrenceRuleFromJson(jsonString: String?): RecurrenceRule? =
         jsonString?.let { json.decodeFromString(it) }
 
-    // IgnoreRule
     @TypeConverter
     fun ignoreRulesToJson(rules: List<IgnoreRule>?): String? =
         rules?.let { json.encodeToString(it) }

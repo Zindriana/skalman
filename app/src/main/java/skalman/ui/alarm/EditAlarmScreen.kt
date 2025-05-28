@@ -16,50 +16,49 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import skalman.utils.alarmUtils.AlarmPermissionHelper
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddAlarmScreen(viewModel: CalendarViewModel) {
+fun EditAlarmScreen(
+    viewModel: CalendarViewModel,
+    alarmToEdit: CalendarAlarm,
+    onBack: () -> Unit
+) {
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
-    // UI states
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var notes by remember { mutableStateOf("") }
-    var preAlarmMinutes by remember { mutableStateOf("5") }
-    var colorTag by remember { mutableStateOf("blue") }
-    var alarmSound by remember { mutableStateOf("default") }
+    // Fält som initieras från alarmToEdit
+    var title by remember { mutableStateOf(alarmToEdit.title) }
+    var description by remember { mutableStateOf(alarmToEdit.description ?: "") }
+    var notes by remember { mutableStateOf(alarmToEdit.notes ?: "") }
+    var preAlarmMinutes by remember { mutableStateOf(alarmToEdit.preAlarmMinutes.toString()) }
+    var colorTag by remember { mutableStateOf(alarmToEdit.colorTag ?: "blue") }
+    var alarmSound by remember { mutableStateOf(alarmToEdit.alarmSound) }
 
-    var startDate by remember { mutableStateOf(LocalDate.now()) }
-    var startTime by remember { mutableStateOf(LocalTime.now().plusMinutes(1)) }
+    var startDate by remember { mutableStateOf(alarmToEdit.startTime.toLocalDate()) }
+    var startTime by remember { mutableStateOf(alarmToEdit.startTime.toLocalTime()) }
 
     val fullStartTime = remember(startDate, startTime) {
         LocalDateTime.of(startDate, startTime)
     }
 
     val colorOptions = listOf("blue", "green", "red", "yellow", "purple")
-    var colorExpanded by remember { mutableStateOf(false) }
-
     val soundOptions = listOf("default")
+
+    var colorExpanded by remember { mutableStateOf(false) }
     var soundExpanded by remember { mutableStateOf(false) }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
-    ) { padding ->
+    Scaffold(snackbarHost = { SnackbarHost(hostState = snackbarHostState) }) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
                 .padding(padding)
         ) {
-
-            Text("Lägg till nytt alarm", style = MaterialTheme.typography.titleLarge)
+            Text("Redigera alarm", style = MaterialTheme.typography.titleLarge)
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Title field
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
@@ -67,7 +66,6 @@ fun AddAlarmScreen(viewModel: CalendarViewModel) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Description field
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
@@ -75,7 +73,6 @@ fun AddAlarmScreen(viewModel: CalendarViewModel) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // Notes field
             OutlinedTextField(
                 value = notes,
                 onValueChange = { notes = it },
@@ -85,59 +82,49 @@ fun AddAlarmScreen(viewModel: CalendarViewModel) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Date picker
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        DatePickerDialog(
-                            context,
-                            { _, year, month, dayOfMonth ->
-                                startDate = LocalDate.of(year, month + 1, dayOfMonth)
-                            },
-                            startDate.year,
-                            startDate.monthValue - 1,
-                            startDate.dayOfMonth
-                        ).show()
-                    }
-            ) {
+            // Datum & tid
+            Box(modifier = Modifier.fillMaxWidth().clickable {
+                DatePickerDialog(
+                    context,
+                    { _, year, month, dayOfMonth ->
+                        startDate = LocalDate.of(year, month + 1, dayOfMonth)
+                    },
+                    startDate.year,
+                    startDate.monthValue - 1,
+                    startDate.dayOfMonth
+                ).show()
+            }) {
                 OutlinedTextField(
                     value = startDate.format(DateTimeFormatter.ISO_LOCAL_DATE),
                     onValueChange = {},
                     label = { Text("Datum") },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = false
+                    enabled = false,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
-            // Time picker
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        TimePickerDialog(
-                            context,
-                            { _, hour, minute ->
-                                startTime = LocalTime.of(hour, minute)
-                            },
-                            startTime.hour,
-                            startTime.minute,
-                            true
-                        ).show()
-                    }
-            ) {
+            Box(modifier = Modifier.fillMaxWidth().clickable {
+                TimePickerDialog(
+                    context,
+                    { _, hour, minute ->
+                        startTime = LocalTime.of(hour, minute)
+                    },
+                    startTime.hour,
+                    startTime.minute,
+                    true
+                ).show()
+            }) {
                 OutlinedTextField(
                     value = startTime.format(DateTimeFormatter.ofPattern("HH:mm")),
                     onValueChange = {},
                     label = { Text("Tid") },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = false
+                    enabled = false,
+                    modifier = Modifier.fillMaxWidth()
                 )
             }
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Pre-alarm field
             OutlinedTextField(
                 value = preAlarmMinutes,
                 onValueChange = { preAlarmMinutes = it.filter { c -> c.isDigit() } },
@@ -146,9 +133,7 @@ fun AddAlarmScreen(viewModel: CalendarViewModel) {
                 singleLine = true
             )
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Color dropdown
+            // Färg
             ExposedDropdownMenuBox(
                 expanded = colorExpanded,
                 onExpandedChange = { colorExpanded = !colorExpanded }
@@ -176,9 +161,7 @@ fun AddAlarmScreen(viewModel: CalendarViewModel) {
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Sound dropdown
+            // Ljud
             ExposedDropdownMenuBox(
                 expanded = soundExpanded,
                 onExpandedChange = { soundExpanded = !soundExpanded }
@@ -208,44 +191,41 @@ fun AddAlarmScreen(viewModel: CalendarViewModel) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Save button
             Button(
                 onClick = {
                     if (title.isBlank()) {
                         coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Titel krävs för att spara alarm")
+                            snackbarHostState.showSnackbar("Titel krävs för att spara ändringar")
                         }
                         return@Button
                     }
 
-                    val hasPermission = AlarmPermissionHelper.checkAndRequestExactAlarmPermission(context)
-                    if (!hasPermission) {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Tillåt exakt alarm i inställningar")
-                        }
-                        return@Button
-                    }
-
-                    val newAlarm = CalendarAlarm(
+                    val updatedAlarm = alarmToEdit.copy(
                         title = title,
                         description = description.ifBlank { null },
-                        startTime = fullStartTime,
+                        notes = notes.ifBlank { null },
                         preAlarmMinutes = preAlarmMinutes.toIntOrNull() ?: 0,
-                        recurrenceRules = null,
-                        ignoreRules = null,
+                        startTime = fullStartTime,
                         colorTag = colorTag,
-                        alarmSound = alarmSound,
-                        notes = notes.ifBlank { null }
+                        alarmSound = alarmSound
                     )
-                    viewModel.addAlarm(newAlarm)
 
+                    viewModel.updateAlarm(updatedAlarm)
                     coroutineScope.launch {
-                        snackbarHostState.showSnackbar("Alarm sparat")
+                        snackbarHostState.showSnackbar("Ändringar sparade")
                     }
+                    onBack()
                 },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Spara och schemalägg")
+                Text("Spara ändringar")
+            }
+
+            OutlinedButton(
+                onClick = onBack,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Avbryt")
             }
         }
     }

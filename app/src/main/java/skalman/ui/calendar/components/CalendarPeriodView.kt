@@ -13,7 +13,10 @@ import skalman.ui.alarm.AlarmCard
 import java.time.LocalDate
 
 @Composable
-fun CalendarPeriodView(period: Int, data: List<DayWithAlarms>) {
+fun CalendarPeriodView(period: Int,
+                       data: List<DayWithAlarms>,
+                       onAlarmClick: (skalman.data.models.CalendarAlarm) -> Unit) {
+
     val today = LocalDate.now()
     val endDate = today.plusDays(period.toLong())
 
@@ -36,7 +39,7 @@ fun CalendarPeriodView(period: Int, data: List<DayWithAlarms>) {
                                 modifier = Modifier.padding(start = 8.dp, bottom = 4.dp)
                             )
                             day.alarms.forEach { alarm ->
-                                AlarmCard(alarm)
+                                AlarmCard(alarm = alarm, onClick = { onAlarmClick(alarm) })
                             }
                         }
                     }

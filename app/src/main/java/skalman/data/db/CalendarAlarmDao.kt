@@ -15,4 +15,7 @@ interface CalendarAlarmDao {
 
     @Delete
     suspend fun deleteAlarm(alarm: CalendarAlarm)
+
+    @Update
+    suspend fun updateAlarm(alarm: CalendarAlarm)
 }

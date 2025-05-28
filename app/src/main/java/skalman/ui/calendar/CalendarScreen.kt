@@ -4,13 +4,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import skalman.data.models.CalendarAlarm
 import skalman.viewmodel.CalendarViewModel
 import skalman.ui.calendar.components.CalendarPeriodView
 import skalman.ui.calendar.components.DateViewButton
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalendarScreen(viewModel: CalendarViewModel) {
+fun CalendarScreen(viewModel: CalendarViewModel, onAlarmClick: (CalendarAlarm) -> Unit) {
     val selectedPeriod by viewModel.selectedPeriod.collectAsState(initial = 7)
     val groupedAlarms by viewModel.groupedAlarms.collectAsState(initial = emptyList())
 
@@ -18,11 +18,7 @@ fun CalendarScreen(viewModel: CalendarViewModel) {
         viewModel.loadGroupedAlarms()
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(title = { Text("Din kalender") })
-        }
-    ) { paddingValues ->
+    Scaffold{ paddingValues ->
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -35,7 +31,8 @@ fun CalendarScreen(viewModel: CalendarViewModel) {
 
             CalendarPeriodView(
                 period = selectedPeriod,
-                data = groupedAlarms
+                data = groupedAlarms,
+                onAlarmClick = onAlarmClick
             )
         }
     }
