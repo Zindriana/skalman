@@ -1,7 +1,4 @@
-//gör om den här till att användas för mer detaljrik alarm
-// och för uppdatering och radering
-
-package skalman.ui.calendar.components
+package skalman.ui.alarm
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,15 +12,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import skalman.data.models.CalendarAlarm
-import skalman.ui.alarm.AlarmCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DayCard(alarms: List<CalendarAlarm>) {
+fun DetailedAlarmCard(alarm: CalendarAlarm) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Din kalender") }
+                title = { Text(alarm.title) }
             )
         }
     ) { paddingValues ->
@@ -32,10 +28,7 @@ fun DayCard(alarms: List<CalendarAlarm>) {
                 .padding(paddingValues)
                 .fillMaxSize()
         ) {
-            LazyColumn {
-                items(alarms) { alarm ->
-                    AlarmCard(alarm)
-                }
+
             }
         }
     }
