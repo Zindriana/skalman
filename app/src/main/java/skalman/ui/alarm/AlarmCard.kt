@@ -1,4 +1,4 @@
-package skalman.ui.calendar.components
+package skalman.ui.alarm
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import skalman.data.models.CalendarAlarm
+import skalman.utils.dateUtils.toReadableString
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -29,8 +30,8 @@ fun AlarmCard(alarm: CalendarAlarm) {
                 Text(text = "Föralarm: ${alarm.preAlarmMinutes} min innan")
             }
 
-            alarm.recurrenceRules?.takeIf { it.isNotEmpty() }?.let {
-                Text(text = "Upprepning: ${it.joinToString(", ")}")
+            alarm.recurrenceRules?.let {
+                Text(text = "Upprepning: ${it.toReadableString()}")
             }
 
             alarm.notes?.let {
