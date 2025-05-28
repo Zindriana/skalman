@@ -5,19 +5,17 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.collect
 import skalman.data.models.CalendarAlarm
 import skalman.data.models.DayWithAlarms
 import skalman.data.repo.AlarmRepository
 import skalman.utils.alarmUtils.AlarmScheduler
-import java.time.LocalDate
 
 class CalendarViewModel(
     private val repository: AlarmRepository,
     private val scheduler: AlarmScheduler
 ) : ViewModel() {
 
-    private val _selectedPeriod = MutableStateFlow(7) // antal dagar framåt
+    private val _selectedPeriod = MutableStateFlow(7)
     val selectedPeriod: StateFlow<Int> = _selectedPeriod
 
     private val _groupedAlarms = MutableStateFlow<List<DayWithAlarms>>(emptyList())

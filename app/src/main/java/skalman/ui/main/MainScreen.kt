@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 import skalman.data.repo.AlarmRepository
 import skalman.ui.calendar.CalendarScreen
 import skalman.ui.main.components.DateTimeDisplay
-import skalman.ui.addalarm.AddAlarmScreen
+import skalman.ui.alarm.AddAlarmScreen
 // import skalman.ui.focus.FocusScreen
 import skalman.viewmodel.CalendarViewModel
 import skalman.utils.alarmUtils.AlarmScheduler
@@ -50,7 +50,7 @@ fun MainScreen(repository: AlarmRepository) {
             when (currentScreen) {
                 MainScreenDestination.Calendar -> CalendarScreen(viewModel)
                 MainScreenDestination.AddAlarm -> AddAlarmScreen(viewModel)
-                MainScreenDestination.Focus -> AddAlarmScreen(viewModel) // Temporärt
+                MainScreenDestination.Focus -> AddAlarmScreen(viewModel) // placeholder
             }
 
             DateTimeDisplay(modifier = Modifier.align(Alignment.TopEnd))
