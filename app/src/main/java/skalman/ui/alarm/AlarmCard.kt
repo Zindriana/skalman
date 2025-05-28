@@ -7,7 +7,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import skalman.data.models.CalendarAlarm
-import skalman.utils.dateUtils.toReadableString
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -28,19 +27,6 @@ fun AlarmCard(alarm: CalendarAlarm, onClick: () -> Unit) {
 
             Text(text = "Start: ${alarm.startTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))}")
 
-            if (alarm.preAlarmMinutes > 0) {
-                Text(text = "Föralarm: ${alarm.preAlarmMinutes} min innan")
-            }
-
-            alarm.recurrenceRules?.let {
-                Text(text = "Upprepning: ${it.toReadableString()}")
-            }
-
-            alarm.notes?.let {
-                Text(text = "Anteckning: $it", style = MaterialTheme.typography.bodySmall)
-            }
-
-            Text(text = "Ljud: ${alarm.alarmSound}")
         }
     }
 }
