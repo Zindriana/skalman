@@ -37,7 +37,7 @@ fun AlarmForm(
     var recurrenceRule by remember { mutableStateOf(initialAlarm?.recurrenceRules) }
     var ignoreRules by remember { mutableStateOf(initialAlarm?.ignoreRules ?: emptyList()) }
 
-    val colorOptions = listOf("blue", "green", "red", "yellow", "purple")
+    val colorOptions = listOf("grå", "blå", "grön", "gul", "lila", "röd")
     val soundOptions = listOf("default")
 
     LazyColumn(
