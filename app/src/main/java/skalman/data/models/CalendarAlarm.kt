@@ -6,7 +6,8 @@ import java.time.LocalDateTime
 
 @Entity(tableName = "calendar_alarms")
 data class CalendarAlarm(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val title: String = "Tom titel",
     val description: String? = null,
     val startTime: LocalDateTime,
