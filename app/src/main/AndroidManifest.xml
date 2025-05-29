@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="skalman">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
 
     <application
@@ -12,13 +13,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Skalman"
-        tools:targetApi="31">
+        android:theme="@style/Theme.Skalman">
 
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.Skalman">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

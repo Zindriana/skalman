@@ -1,256 +1,55 @@
 package skalman.ui.alarm
 
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
-import android.content.Intent
-import android.net.Uri
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Build
-import android.provider.Settings
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import kotlinx.coroutines.launch
-import skalman.data.models.CalendarAlarm
-import skalman.viewmodel.CalendarViewModel
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.format.DateTimeFormatter
+import androidx.core.content.ContextCompat
 import skalman.utils.alarmUtils.AlarmPermissionHelper
+import skalman.viewmodel.CalendarViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddAlarmScreen(viewModel: CalendarViewModel) {
+fun AddAlarmScreen(
+    viewModel: CalendarViewModel,
+    onBack: () -> Unit
+) {
     val context = LocalContext.current
-    val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
 
-    // UI states
-    var title by remember { mutableStateOf("") }
-    var description by remember { mutableStateOf("") }
-    var notes by remember { mutableStateOf("") }
-    var preAlarmMinutes by remember { mutableStateOf("5") }
-    var colorTag by remember { mutableStateOf("blue") }
-    var alarmSound by remember { mutableStateOf("default") }
+    // 🔔 Runtime permission för notifikationer (Android 13+)
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        val permission = Manifest.permission.POST_NOTIFICATIONS
+        val launcher = rememberLauncherForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { granted ->
+            // Ignoreras för nu – kan loggas eller visas
+        }
 
-    var startDate by remember { mutableStateOf(LocalDate.now()) }
-    var startTime by remember { mutableStateOf(LocalTime.now().plusMinutes(1)) }
-
-    val fullStartTime = remember(startDate, startTime) {
-        LocalDateTime.of(startDate, startTime)
+        LaunchedEffect(Unit) {
+            val notGranted = ContextCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED
+            if (notGranted) launcher.launch(permission)
+        }
     }
 
-    val colorOptions = listOf("blue", "green", "red", "yellow", "purple")
-    var colorExpanded by remember { mutableStateOf(false) }
-
-    val soundOptions = listOf("default")
-    var soundExpanded by remember { mutableStateOf(false) }
-
     Scaffold(
-        snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
+        modifier = Modifier.fillMaxSize()
     ) { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
-                .padding(padding)
-        ) {
-
-            Text("Lägg till nytt alarm", style = MaterialTheme.typography.titleLarge)
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Title field
-            OutlinedTextField(
-                value = title,
-                onValueChange = { title = it },
-                label = { Text("Titel") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            // Description field
-            OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Beskrivning") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            // Notes field
-            OutlinedTextField(
-                value = notes,
-                onValueChange = { notes = it },
-                label = { Text("Anteckningar") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Date picker
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        DatePickerDialog(
-                            context,
-                            { _, year, month, dayOfMonth ->
-                                startDate = LocalDate.of(year, month + 1, dayOfMonth)
-                            },
-                            startDate.year,
-                            startDate.monthValue - 1,
-                            startDate.dayOfMonth
-                        ).show()
-                    }
-            ) {
-                OutlinedTextField(
-                    value = startDate.format(DateTimeFormatter.ISO_LOCAL_DATE),
-                    onValueChange = {},
-                    label = { Text("Datum") },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = false
-                )
-            }
-
-            // Time picker
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        TimePickerDialog(
-                            context,
-                            { _, hour, minute ->
-                                startTime = LocalTime.of(hour, minute)
-                            },
-                            startTime.hour,
-                            startTime.minute,
-                            true
-                        ).show()
-                    }
-            ) {
-                OutlinedTextField(
-                    value = startTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                    onValueChange = {},
-                    label = { Text("Tid") },
-                    modifier = Modifier.fillMaxWidth(),
-                    enabled = false
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Pre-alarm field
-            OutlinedTextField(
-                value = preAlarmMinutes,
-                onValueChange = { preAlarmMinutes = it.filter { c -> c.isDigit() } },
-                label = { Text("Föralarm (minuter)") },
-                modifier = Modifier.fillMaxWidth(),
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Color dropdown
-            ExposedDropdownMenuBox(
-                expanded = colorExpanded,
-                onExpandedChange = { colorExpanded = !colorExpanded }
-            ) {
-                OutlinedTextField(
-                    value = colorTag,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Färg") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                ExposedDropdownMenu(
-                    expanded = colorExpanded,
-                    onDismissRequest = { colorExpanded = false }
-                ) {
-                    colorOptions.forEach { option ->
-                        DropdownMenuItem(
-                            text = { Text(option) },
-                            onClick = {
-                                colorTag = option
-                                colorExpanded = false
-                            }
-                        )
-                    }
+        AlarmForm(
+            modifier = Modifier.padding(padding),
+            onSubmit = { alarm ->
+                // ✅ Kontrollera tillstånd för exakta alarm innan schemaläggning
+                if (AlarmPermissionHelper.checkAndRequestExactAlarmPermission(context)) {
+                    viewModel.addAlarm(alarm)
+                    onBack()
                 }
-            }
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Sound dropdown
-            ExposedDropdownMenuBox(
-                expanded = soundExpanded,
-                onExpandedChange = { soundExpanded = !soundExpanded }
-            ) {
-                OutlinedTextField(
-                    value = alarmSound,
-                    onValueChange = {},
-                    readOnly = true,
-                    label = { Text("Ljud") },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                ExposedDropdownMenu(
-                    expanded = soundExpanded,
-                    onDismissRequest = { soundExpanded = false }
-                ) {
-                    soundOptions.forEach { option ->
-                        DropdownMenuItem(
-                            text = { Text(option) },
-                            onClick = {
-                                alarmSound = option
-                                soundExpanded = false
-                            }
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Save button
-            Button(
-                onClick = {
-                    if (title.isBlank()) {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Titel krävs för att spara alarm")
-                        }
-                        return@Button
-                    }
-
-                    val hasPermission = AlarmPermissionHelper.checkAndRequestExactAlarmPermission(context)
-                    if (!hasPermission) {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Tillåt exakt alarm i inställningar")
-                        }
-                        return@Button
-                    }
-
-                    val newAlarm = CalendarAlarm(
-                        title = title,
-                        description = description.ifBlank { null },
-                        startTime = fullStartTime,
-                        preAlarmMinutes = preAlarmMinutes.toIntOrNull() ?: 0,
-                        recurrenceRules = null,
-                        ignoreRules = null,
-                        colorTag = colorTag,
-                        alarmSound = alarmSound,
-                        notes = notes.ifBlank { null }
-                    )
-                    viewModel.addAlarm(newAlarm)
-
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar("Alarm sparat")
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Spara och schemalägg")
-            }
-        }
+            },
+            onCancel = onBack
+        )
     }
 }

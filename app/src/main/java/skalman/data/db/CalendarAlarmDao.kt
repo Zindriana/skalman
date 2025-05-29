@@ -11,8 +11,11 @@ interface CalendarAlarmDao {
     fun getAllAlarms(): Flow<List<CalendarAlarm>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAlarm(alarm: CalendarAlarm)
+    suspend fun insertAlarmReturningId(alarm: CalendarAlarm): Long
 
     @Delete
     suspend fun deleteAlarm(alarm: CalendarAlarm)
+
+    @Update
+    suspend fun updateAlarm(alarm: CalendarAlarm)
 }

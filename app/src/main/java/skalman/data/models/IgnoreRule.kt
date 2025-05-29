@@ -11,7 +11,8 @@ sealed class IgnoreRule {
 
     @Serializable
     data class IgnoreWeekdays(
-        val days: Set<Int>
+        val days: Set<Int>,
+        val moduloWeek: Int? = null
     ) : IgnoreRule()
 
     @Serializable
@@ -19,3 +20,4 @@ sealed class IgnoreRule {
         val dates: Set<LocalDate>
     ) : IgnoreRule()
 }
+

@@ -1,18 +1,23 @@
 package skalman.data.repo
 
 import kotlinx.coroutines.flow.Flow
-import skalman.data.db.CalendarAlarmDao
 import skalman.data.models.CalendarAlarm
+import skalman.data.db.CalendarAlarmDao
 
-class AlarmRepository(private val dao: CalendarAlarmDao) {
+class AlarmRepository(private val alarmDao: CalendarAlarmDao) {
 
-    val alarms: Flow<List<CalendarAlarm>> = dao.getAllAlarms()
+    val alarms: Flow<List<CalendarAlarm>> = alarmDao.getAllAlarms()
 
-    suspend fun addAlarm(alarm: CalendarAlarm) {
-        dao.insertAlarm(alarm)
+    // Returnerar det nya ID:t från Room
+    suspend fun addAlarm(alarm: CalendarAlarm): Long {
+        return alarmDao.insertAlarmReturningId(alarm)
     }
 
     suspend fun deleteAlarm(alarm: CalendarAlarm) {
-        dao.deleteAlarm(alarm)
+        alarmDao.deleteAlarm(alarm)
+    }
+
+    suspend fun updateAlarm(alarm: CalendarAlarm) {
+        alarmDao.updateAlarm(alarm)
     }
 }
