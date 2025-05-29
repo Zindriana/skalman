@@ -41,8 +41,9 @@ class CalendarViewModel(
 
     fun addAlarm(alarm: CalendarAlarm) {
         viewModelScope.launch {
-            repository.addAlarm(alarm)
-            scheduler.scheduleAlarm(alarm)
+            val insertedId = repository.addAlarm(alarm)
+            val alarmWithId = alarm.copy(id = insertedId.toInt())
+            scheduler.scheduleAlarm(alarmWithId)
             loadGroupedAlarms()
         }
     }
