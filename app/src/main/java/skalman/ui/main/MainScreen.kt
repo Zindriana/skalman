@@ -67,9 +67,9 @@ fun MainScreen(repository: AlarmRepository) {
                     }
                 )
 
-                MainScreenDestination.AddAlarm -> AddAlarmScreen(viewModel)
+                MainScreenDestination.AddAlarm -> AddAlarmScreen(viewModel, onBack = { currentScreen = MainScreenDestination.Calendar })
 
-                MainScreenDestination.Focus -> AddAlarmScreen(viewModel) // placeholder
+                MainScreenDestination.Focus -> AddAlarmScreen(viewModel, onBack = { currentScreen = MainScreenDestination.Calendar }) // placeholder
 
                 MainScreenDestination.AlarmDetail -> selectedAlarm?.let {
                     DetailedAlarmCard(

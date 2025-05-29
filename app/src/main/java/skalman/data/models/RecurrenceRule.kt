@@ -9,8 +9,12 @@ sealed class RecurrenceRule {
     data class IntervalDays(val everyXDays: Int) : RecurrenceRule()
 
     @Serializable
-    data class Weekly(val daysOfWeek: Set<Int>) : RecurrenceRule()
+    data class Weekly(
+        val daysOfWeek: Set<Int>,
+        val moduloWeek: Int? = null
+    ) : RecurrenceRule()
 
     @Serializable
     data class Monthly(val daysOfMonth: Set<Int>) : RecurrenceRule()
 }
+
