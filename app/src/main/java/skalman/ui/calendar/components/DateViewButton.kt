@@ -19,6 +19,11 @@ fun DateViewButton(
     selectedView: Int = 7,
     onViewModeChange: (Int) -> Unit = {}
 ){
+    //snabbval för användaren att få fram 1, 7 eller 30 dagar. Valde att ha Int här
+    // som skickas vidar in i CalendarPeriodView för att förbereda implementation
+    // införa en framtida möjlighet att manuellt välja custom range utöver dag, vecka, månad.
+    // I framtiden så ska det nog läggas in så att vecka och månad renderar ut en specifik
+    // vecka/månad istället för 7/30 dagar
     val viewOptions = listOf(
         1 to "Dag",
         7 to "Vecka",

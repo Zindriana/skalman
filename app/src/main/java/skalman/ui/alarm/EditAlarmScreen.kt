@@ -23,7 +23,7 @@ fun EditAlarmScreen(
                 viewModel.updateAlarm(it)
                 onBack()
             },
-            onCancel = onBack
+            onBack = onBack
         )
     }
 }

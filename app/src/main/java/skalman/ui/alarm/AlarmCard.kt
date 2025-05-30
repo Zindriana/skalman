@@ -22,20 +22,17 @@ fun AlarmCard(alarm: CalendarAlarm, onClick: () -> Unit) {
             .clickable { onClick() },
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
     ) {
-        // 👇 Gör raden lika hög som dess innehåll (t.ex. Column)
         Row(
             modifier = Modifier
-                .height(IntrinsicSize.Min) // Gör att Box kan använda fillMaxHeight()
+                .height(IntrinsicSize.Min)
         ) {
-            // 👇 Färgindikator till vänster
             Box(
                 modifier = Modifier
                     .width(12.dp)
                     .fillMaxHeight()
-                    .background(color) // Använd färgen från tag
+                    .background(color)
             )
 
-            // 👇 Innehållet i kortet
             Column(
                 modifier = Modifier
                     .padding(16.dp)

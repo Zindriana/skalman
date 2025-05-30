@@ -4,7 +4,6 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.*
 import org.junit.Rule
 import org.junit.Test
-import skalman.MainActivity
 
 class DateTimeDisplayTest {
 

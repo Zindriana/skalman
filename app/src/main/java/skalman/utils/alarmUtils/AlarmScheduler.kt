@@ -8,6 +8,8 @@ import android.util.Log
 import skalman.data.models.CalendarAlarm
 import java.time.ZoneId
 
+//Alla tre alarmUtils är skapade med stor hjälp av AI
+
 class AlarmScheduler(private val context: Context) {
 
     private val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -24,9 +26,9 @@ class AlarmScheduler(private val context: Context) {
         if (alarm.preAlarmMinutes > 0) {
             val preAlarmTime = alarm.startTime.minusMinutes(alarm.preAlarmMinutes.toLong())
             scheduleExactAlarm(
-                requestCode = -alarm.id, // neg id för att skilja dem
+                requestCode = -alarm.id,
                 triggerAtMillis = preAlarmTime.toEpochMillis(),
-                message = "Förbered avsluta"
+                message = "Förbered avslut"
             )
         }
     }
