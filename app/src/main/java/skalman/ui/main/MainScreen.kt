@@ -1,5 +1,6 @@
 package skalman.ui.main
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,17 +11,16 @@ import androidx.compose.ui.unit.dp
 import skalman.data.repo.AlarmRepository
 import skalman.ui.calendar.CalendarScreen
 import skalman.ui.main.components.DateTimeDisplay
-import skalman.ui.alarm.AddAlarmScreen
-import skalman.ui.alarm.DetailedAlarmCard
-// import skalman.ui.focus.FocusScreen
+import skalman.ui.alarm.screens.AddAlarmScreen
 import skalman.viewmodel.CalendarViewModel
 import skalman.utils.alarmUtils.AlarmScheduler
 import skalman.data.models.CalendarAlarm
-import skalman.ui.alarm.EditAlarmScreen
+import skalman.ui.alarm.screens.DetailedAlarmScreen
+import skalman.ui.alarm.screens.EditAlarmScreen
 
 enum class MainScreenDestination {
-    Calendar, AddAlarm, Focus, AlarmDetail, EditAlarm
-}
+    Calendar, AddAlarm, Focus, AlarmDetail, EditAlarm, Todo
+} //Focus och To-do är inlagda här sålänge i väntan på att FocusScreen och TodoScreen skapas i en framtida version
 
 @Composable
 fun MainScreen(repository: AlarmRepository) {
@@ -33,27 +33,33 @@ fun MainScreen(repository: AlarmRepository) {
     var selectedAlarm by remember { mutableStateOf<CalendarAlarm?>(null) }
     var alarmToEdit by remember { mutableStateOf<CalendarAlarm?>(null) }
 
-
-
     Column(modifier = Modifier.fillMaxSize()) {
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+        ) {
             DateTimeDisplay(modifier = Modifier.align(Alignment.TopEnd))
         }
 
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(2.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) { //texterna skulle kunna bytas ut mot symboler/ikoner
             Button(onClick = { currentScreen = MainScreenDestination.Calendar }) {
                 Text("Kalender")
             }
             Button(onClick = { currentScreen = MainScreenDestination.AddAlarm }) {
-                Text("Lägg till Alarm")
+                Text("Nytt Alarm")
             }
             Button(onClick = { currentScreen = MainScreenDestination.Focus }) {
                 Text("Fokus")
+            }
+            Button(onClick = { currentScreen = MainScreenDestination.Todo }) {
+                Text("Todo")
             }
         }
 
@@ -70,17 +76,18 @@ fun MainScreen(repository: AlarmRepository) {
                 MainScreenDestination.AddAlarm -> AddAlarmScreen(viewModel, onBack = { currentScreen = MainScreenDestination.Calendar })
 
                 MainScreenDestination.Focus -> AddAlarmScreen(viewModel, onBack = { currentScreen = MainScreenDestination.Calendar }) // placeholder
+                MainScreenDestination.Todo -> AddAlarmScreen(viewModel, onBack = { currentScreen = MainScreenDestination.Calendar }) // placeholder
 
                 MainScreenDestination.AlarmDetail -> selectedAlarm?.let {
-                    DetailedAlarmCard(
+                    DetailedAlarmScreen(
                         alarm = it,
-                        onUpdate = { alarm ->
-                            alarmToEdit = alarm
-                            currentScreen = MainScreenDestination.EditAlarm
-                        },
                         onDelete = { alarm ->
                             viewModel.deleteAlarm(alarm)
                             currentScreen = MainScreenDestination.Calendar
+                        },
+                        onUpdate = { alarm ->
+                            alarmToEdit = alarm
+                            currentScreen = MainScreenDestination.EditAlarm
                         }
                     )
                 }

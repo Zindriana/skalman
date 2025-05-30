@@ -31,7 +31,7 @@ fun DateTimeDisplay(modifier: Modifier = Modifier) {
     Text(
         text = text,
         modifier = modifier
-            .testTag("dateTimeDisplay")
+            .testTag("dateTimeDisplay") //testerna är avstängda, men låter den här vara kvar för framtiden
             .padding(8.dp),
         style = MaterialTheme.typography.bodyLarge,
         fontWeight = FontWeight.Bold,

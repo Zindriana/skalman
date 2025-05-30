@@ -3,9 +3,10 @@ package skalman.utils.alarmUtils
 import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.provider.Settings
 import androidx.core.net.toUri
+
+//Alla tre alarmUtils är skapade med stor hjälp av AI
 
 object AlarmPermissionHelper {
 

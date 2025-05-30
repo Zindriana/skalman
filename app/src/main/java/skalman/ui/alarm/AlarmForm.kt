@@ -19,13 +19,13 @@ fun AlarmForm(
     modifier: Modifier = Modifier,
     initialAlarm: CalendarAlarm? = null,
     onSubmit: (CalendarAlarm) -> Unit,
-    onCancel: (() -> Unit)? = null
+    onBack: () -> Unit
 ) {
     var title by remember { mutableStateOf(initialAlarm?.title ?: "") }
     var description by remember { mutableStateOf(initialAlarm?.description ?: "") }
     var notes by remember { mutableStateOf(initialAlarm?.notes ?: "") }
     var preAlarmMinutes by remember { mutableStateOf(initialAlarm?.preAlarmMinutes?.toString() ?: "5") }
-    var colorTag by remember { mutableStateOf(initialAlarm?.colorTag ?: "blue") }
+    var colorTag by remember { mutableStateOf(initialAlarm?.colorTag ?: "grå") }
     var alarmSound by remember { mutableStateOf(initialAlarm?.alarmSound ?: "default") }
 
     var startDate by remember { mutableStateOf(initialAlarm?.startTime?.toLocalDate() ?: LocalDate.now()) }
@@ -37,7 +37,7 @@ fun AlarmForm(
     var recurrenceRule by remember { mutableStateOf(initialAlarm?.recurrenceRules) }
     var ignoreRules by remember { mutableStateOf(initialAlarm?.ignoreRules ?: emptyList()) }
 
-    val colorOptions = listOf("grå", "blå", "grön", "gul", "lila", "röd")
+    val colorOptions = listOf("blå", "grå", "grön", "gul", "lila", "röd")
     val soundOptions = listOf("default")
 
     LazyColumn(
@@ -54,7 +54,9 @@ fun AlarmForm(
                 value = title,
                 onValueChange = { title = it },
                 label = { Text("Titel") },
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                isError = title.isEmpty(),
+                supportingText = { Text("Obligatoriskt fält") },
             )
         }
 
@@ -101,6 +103,8 @@ fun AlarmForm(
             )
         }
 
+        //todo lägga in en kontroll så att IgnoreRuleSection bara är synlig ifall användaren
+        //todo har valt någon recurrence
         item {
             IgnoreRuleSection(
                 initialRules = ignoreRules,
@@ -119,6 +123,8 @@ fun AlarmForm(
         item {
             Button(
                 onClick = {
+                    //todo lämna ett meddelande till användare som ber användare att fylla i titel,
+                    //todo exempelvis med hjälp av en snackbar
                     if (title.isBlank()) return@Button
 
                     val alarm = (initialAlarm ?: CalendarAlarm(startTime = fullStartTime)).copy(
@@ -141,10 +147,11 @@ fun AlarmForm(
         }
 
         item {
-            onCancel?.let {
-                OutlinedButton(onClick = it, modifier = Modifier.fillMaxWidth()) {
-                    Text("Avbryt")
-                }
+            OutlinedButton(
+                onClick = onBack,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Avbryt")
             }
         }
     }
