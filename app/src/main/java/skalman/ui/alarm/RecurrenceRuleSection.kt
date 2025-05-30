@@ -7,16 +7,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import skalman.data.models.RecurrenceRule
+import skalman.utils.ui.weekdays
 
 @Composable
 fun RecurrenceRuleSection(
     recurrenceRule: RecurrenceRule?,
     onRuleChange: (RecurrenceRule?) -> Unit
 ) {
-    val weekdays = listOf(
-        1 to "Mån", 2 to "Tis", 3 to "Ons", 4 to "Tor",
-        5 to "Fre", 6 to "Lör", 7 to "Sön"
-    )
 
     var selectedType by remember {
         mutableStateOf(

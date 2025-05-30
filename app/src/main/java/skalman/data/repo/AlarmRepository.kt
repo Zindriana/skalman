@@ -8,7 +8,6 @@ class AlarmRepository(private val alarmDao: CalendarAlarmDao) {
 
     val alarms: Flow<List<CalendarAlarm>> = alarmDao.getAllAlarms()
 
-    // Returnerar det nya ID:t från Room
     suspend fun addAlarm(alarm: CalendarAlarm): Long {
         return alarmDao.insertAlarmReturningId(alarm)
     }

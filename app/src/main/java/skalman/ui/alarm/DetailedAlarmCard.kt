@@ -50,10 +50,6 @@ fun DetailedAlarmCard(
             }
         }
 
-        alarm.colorTag?.let {
-            Text(text = "Färg: $it")
-        }
-
         Text(text = "Ljud: ${alarm.alarmSound}")
 
         alarm.notes?.let {
@@ -66,7 +62,7 @@ fun DetailedAlarmCard(
             }
 
             Button(onClick = { onDelete(alarm) }, colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.errorContainer
+                containerColor = MaterialTheme.colorScheme.error
             )) {
                 Text("Ta bort")
             }

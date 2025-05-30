@@ -20,7 +20,7 @@ import skalman.ui.alarm.EditAlarmScreen
 
 enum class MainScreenDestination {
     Calendar, AddAlarm, Focus, AlarmDetail, EditAlarm
-}
+} //Focus är inlagd här sålänge i väntan på att FocusScreen skapas i en framtida version
 
 @Composable
 fun MainScreen(repository: AlarmRepository) {
@@ -45,7 +45,7 @@ fun MainScreen(repository: AlarmRepository) {
                 .fillMaxWidth()
                 .padding(8.dp),
             horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
+        ) { //texterna skulle kunna bytas ut mot symboler/ikoner
             Button(onClick = { currentScreen = MainScreenDestination.Calendar }) {
                 Text("Kalender")
             }

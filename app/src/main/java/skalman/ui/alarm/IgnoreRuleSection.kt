@@ -8,16 +8,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import skalman.data.models.IgnoreRule
 import java.time.LocalDate
+import skalman.utils.ui.weekdays
 
 @Composable
 fun IgnoreRuleSection(
     initialRules: List<IgnoreRule>,
     onRuleChange: (List<IgnoreRule>) -> Unit
 ) {
-    val weekdays = listOf(
-        1 to "Mån", 2 to "Tis", 3 to "Ons", 4 to "Tor",
-        5 to "Fre", 6 to "Lör", 7 to "Sön"
-    )
 
     var ignoredWeekdays by remember {
         mutableStateOf(initialRules.filterIsInstance<IgnoreRule.IgnoreWeekdays>().firstOrNull()?.days ?: emptySet())
@@ -27,16 +24,15 @@ fun IgnoreRuleSection(
         mutableStateOf(initialRules.filterIsInstance<IgnoreRule.IgnoreWeekdays>().firstOrNull()?.moduloWeek)
     }
 
-    var ignoredDates by remember {
-        mutableStateOf(initialRules.filterIsInstance<IgnoreRule.IgnoreDates>().firstOrNull()?.dates ?: emptySet())
-    }
+    // ignoreDates är inget som används i nuvarande version,
+    // men funktion för det kommer läggas till i en senare version
+    var ignoredDates by remember { mutableStateOf(emptySet<LocalDate>()) }
 
     Column {
         Text("Undantag", style = MaterialTheme.typography.titleMedium)
 
         Text("Veckodagar att ignorera:")
 
-        // ✅ Uppdaterad rad med veckodags-checkboxar
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -48,10 +44,7 @@ fun IgnoreRuleSection(
                         checked = ignoredWeekdays.contains(num),
                         onCheckedChange = {
                             ignoredWeekdays = if (it) ignoredWeekdays + num else ignoredWeekdays - num
-                            onRuleChange(buildList {
-                                add(IgnoreRule.IgnoreWeekdays(ignoredWeekdays, ignoredOddEven))
-                                if (ignoredDates.isNotEmpty()) add(IgnoreRule.IgnoreDates(ignoredDates))
-                            })
+                            onRuleChange(listOf(IgnoreRule.IgnoreWeekdays(ignoredWeekdays, ignoredOddEven)))
                         }
                     )
                     Text(label)
@@ -60,45 +53,45 @@ fun IgnoreRuleSection(
         }
 
         Row {
-            FilterChip(selected = ignoredOddEven == null, onClick = {
-                ignoredOddEven = null
-                onRuleChange(buildList {
-                    add(IgnoreRule.IgnoreWeekdays(ignoredWeekdays, null))
-                    if (ignoredDates.isNotEmpty()) add(IgnoreRule.IgnoreDates(ignoredDates))
-                })
-            }, label = { Text("Alla veckor") })
+            FilterChip(
+                selected = ignoredOddEven == null,
+                onClick = {
+                    ignoredOddEven = null
+                    onRuleChange(listOf(IgnoreRule.IgnoreWeekdays(ignoredWeekdays, null)))
+                },
+                label = { Text("Alla veckor") }
+            )
 
-            FilterChip(selected = ignoredOddEven == 0, onClick = {
-                ignoredOddEven = 0
-                onRuleChange(buildList {
-                    add(IgnoreRule.IgnoreWeekdays(ignoredWeekdays, 0))
-                    if (ignoredDates.isNotEmpty()) add(IgnoreRule.IgnoreDates(ignoredDates))
-                })
-            }, label = { Text("Jämna") })
+            Spacer(modifier = Modifier.width(8.dp))
 
-            FilterChip(selected = ignoredOddEven == 1, onClick = {
-                ignoredOddEven = 1
-                onRuleChange(buildList {
-                    add(IgnoreRule.IgnoreWeekdays(ignoredWeekdays, 1))
-                    if (ignoredDates.isNotEmpty()) add(IgnoreRule.IgnoreDates(ignoredDates))
-                })
-            }, label = { Text("Ojämna") })
+            FilterChip(
+                selected = ignoredOddEven == 0,
+                onClick = {
+                    ignoredOddEven = 0
+                    onRuleChange(listOf(IgnoreRule.IgnoreWeekdays(ignoredWeekdays, 0)))
+                },
+                label = { Text("Jämna veckor") }
+            )
+
+            Spacer(modifier = Modifier.width(8.dp))
+
+            FilterChip(
+                selected = ignoredOddEven == 1,
+                onClick = {
+                    ignoredOddEven = 1
+                    onRuleChange(listOf(IgnoreRule.IgnoreWeekdays(ignoredWeekdays, 1)))
+                },
+                label = { Text("Ojämna veckor") }
+            )
         }
 
         Spacer(Modifier.height(8.dp))
 
         Text("Datum att ignorera:")
         Button(onClick = {
-            val today = LocalDate.now()
-            ignoredDates = ignoredDates + today
-            onRuleChange(buildList {
-                add(IgnoreRule.IgnoreWeekdays(ignoredWeekdays, ignoredOddEven))
-                add(IgnoreRule.IgnoreDates(ignoredDates))
-            })
+            //tom knapp, ska läggas in en multiple datepicker här i en framtida version
         }) {
-            Text("Lägg till dagens datum (exempel)")
+            Text("Placeholder för datepicker ")
         }
-
-        Text(ignoredDates.sorted().joinToString(", ") { it.toString() })
     }
 }
